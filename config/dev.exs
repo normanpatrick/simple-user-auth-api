@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :user_auth, UserAuth.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "nbp",
+  password: "",
   database: "user_auth_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
