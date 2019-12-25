@@ -7,5 +7,7 @@ defmodule UserAuthWeb.Router do
 
   scope "/api", UserAuthWeb do
     pipe_through :api
+
+    resources "/users", UserController
   end
 end
