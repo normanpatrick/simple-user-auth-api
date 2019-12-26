@@ -18,7 +18,7 @@ defmodule UserAuthWeb.UserControllerTest do
 
   def fixture(:user) do
     {:ok, user} = AuthContext.create_user(@create_attrs)
-    user
+    %{ user | password: nil}
   end
 
   setup %{conn: conn} do
@@ -28,14 +28,14 @@ defmodule UserAuthWeb.UserControllerTest do
   describe "index" do
     test "lists all users", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get(conn, Routes.user_path(conn, :show, id))
 
@@ -43,8 +43,7 @@ defmodule UserAuthWeb.UserControllerTest do
                "id" => id,
                "email" => "some email",
                "is_active" => true,
-               "password" => "some password"
-             } = json_response(conn, 200)["data"]
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -58,7 +57,7 @@ defmodule UserAuthWeb.UserControllerTest do
 
     test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get(conn, Routes.user_path(conn, :show, id))
 
@@ -66,8 +65,7 @@ defmodule UserAuthWeb.UserControllerTest do
                "id" => id,
                "email" => "some updated email",
                "is_active" => false,
-               "password" => "some updated password"
-             } = json_response(conn, 200)["data"]
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn, user: user} do
