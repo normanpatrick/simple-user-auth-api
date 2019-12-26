@@ -27,7 +27,7 @@ defmodule UserAuthWeb.Router do
     else
       conn
       |> put_status(:unauthorized)
-      |> put_view(UserAuthWeb.ErrorView)
+      |> put_view(UserAuthWeb.UserView)
       |> render("error.json", message: "User not authenticated")
       |> halt()
     end
