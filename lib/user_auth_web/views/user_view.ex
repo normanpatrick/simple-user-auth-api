@@ -15,4 +15,16 @@ defmodule UserAuthWeb.UserView do
       email: user.email,
       is_active: user.is_active}
   end
+
+  def render("sign_in.json", %{user: user}) do
+    %{user: %{
+         id: user.id,
+         email: user.email
+      }
+    }
+  end
+
+  def render("error.json", %{message: message}) do
+    %{errors: %{details: message}}
+  end
 end

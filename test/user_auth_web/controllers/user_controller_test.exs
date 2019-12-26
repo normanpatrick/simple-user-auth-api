@@ -87,6 +87,17 @@ defmodule UserAuthWeb.UserControllerTest do
     end
   end
 
+  describe "authenticate user" do
+    test "authenticate successfully" do
+    end
+    test "failed authentication due to bad password" do
+    end
+    test "failed authentication due to bad username" do
+    end
+    test "failed authentication due to non-existent user" do
+    end
+  end
+
   defp create_user(_) do
     user = fixture(:user)
     {:ok, user: user}

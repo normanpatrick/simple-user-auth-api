@@ -101,4 +101,27 @@ defmodule UserAuth.AuthContext do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  def authenticate_user(email, password) do
+    query = from(u in User, where: u.email == ^email)
+    query
+    |> Repo.one()
+    |> IO.inspect()
+    |> verify_password(password)
+  end
+
+  defp verify_password(nil, _) do
+    Bcrypt.no_user_verify()
+    {:error, "Wrong email or passowrd"}
+  end
+
+  defp verify_password(user, password) do
+    IO.inspect(user)
+    IO.inspect(password)
+    if Bcrypt.verify_pass(password, user.password_hash) do
+      {:ok, user}
+    else
+      {:error, "Wrong email or passowrd"}
+    end
+  end
 end
