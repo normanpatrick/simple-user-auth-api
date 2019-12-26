@@ -106,7 +106,7 @@ defmodule UserAuth.AuthContext do
     query = from(u in User, where: u.email == ^email)
     query
     |> Repo.one()
-    |> IO.inspect()
+    # |> IO.inspect()
     |> verify_password(password)
   end
 
@@ -116,8 +116,6 @@ defmodule UserAuth.AuthContext do
   end
 
   defp verify_password(user, password) do
-    IO.inspect(user)
-    IO.inspect(password)
     if Bcrypt.verify_pass(password, user.password_hash) do
       {:ok, user}
     else

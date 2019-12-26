@@ -88,13 +88,40 @@ defmodule UserAuthWeb.UserControllerTest do
   end
 
   describe "authenticate user" do
-    test "authenticate successfully" do
+    @login_user %{
+      email: "someone@somewhere1234.com",
+      is_active: true,
+      password: "password1234"
+    }
+    test "authenticate successfully", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :create), user: @login_user)
+      assert %{} = json_response(conn, 201)
+
+      conn = post(conn, Routes.user_path(conn, :sign_in, @login_user))
+      assert %{"user" => %{"email" => email, "id" => id}} = json_response(conn, 200)
     end
-    test "failed authentication due to bad password" do
+    test "failed authentication due to bad password", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :create), user: @login_user)
+      assert %{} = json_response(conn, 201)
+
+      conn = post(conn, Routes.user_path(conn, :sign_in,
+            %{@login_user | password: "bad password"}))
+      assert %{"errors" => %{"details" => "Wrong email or passowrd"}} =
+        json_response(conn, 401)
     end
-    test "failed authentication due to bad username" do
+    test "failed authentication due to bad username", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :create), user: @login_user)
+      assert %{} = json_response(conn, 201)
+
+      conn = post(conn, Routes.user_path(conn, :sign_in,
+            %{@login_user | email: "bad-email"}))
+      assert %{"errors" => %{"details" => "Wrong email or passowrd"}} =
+        json_response(conn, 401)
     end
-    test "failed authentication due to non-existent user" do
+    test "failed authentication due to non-existent user", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :sign_in, @login_user))
+      assert %{"errors" => %{"details" => "Wrong email or passowrd"}} =
+        json_response(conn, 401)
     end
   end
 
