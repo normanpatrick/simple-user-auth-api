@@ -45,10 +45,12 @@ defmodule UserAuthWeb.UserController do
     case UserAuth.AuthContext.authenticate_user(email, password) do
       {:ok, user} ->
         conn
+        |> put_session(:current_user_id, user.id)
         |> put_status(:ok)
         |> render("sign_in.json", user: user)
       {:error, message} ->
         conn
+        |> delete_session(:current_user_id)
         |> put_status(:unauthorized)
         |> render("error.json", message: message)
     end
