@@ -16,7 +16,7 @@ defmodule UserAuthWeb.Router do
   end
 
   scope "/api", UserAuthWeb do
-    pipe_through :api
+    pipe_through [:api, :authenticate_api]
     resources "/users", UserController
   end
 
@@ -27,6 +27,7 @@ defmodule UserAuthWeb.Router do
     else
       conn
       |> put_status(:unauthorized)
+      |> put_view(UserAuthWeb.ErrorView)
       |> render("error.json", message: "User not authenticated")
       |> halt()
     end

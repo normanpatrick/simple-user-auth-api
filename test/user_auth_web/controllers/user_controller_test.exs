@@ -3,6 +3,7 @@ defmodule UserAuthWeb.UserControllerTest do
 
   alias UserAuth.AuthContext
   alias UserAuth.AuthContext.User
+  alias Plug.Test
 
   @create_attrs %{
     email: "some email",
@@ -15,20 +16,49 @@ defmodule UserAuthWeb.UserControllerTest do
     password: "some updated password"
   }
   @invalid_attrs %{email: nil, is_active: nil, password: nil}
+  @current_user_attrs %{
+    email: "some current user email",
+    is_active: true,
+    password: "some current user password"
+  }
 
   def fixture(:user) do
     {:ok, user} = AuthContext.create_user(@create_attrs)
     %{ user | password: nil}
   end
 
+  def fixture(:current_user) do
+    {:ok, current_user} = AuthContext.create_user(@current_user_attrs)
+    current_user
+  end
+
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    {:ok, conn: conn, current_user: current_user} = setup_current_user(conn)
+    {
+      :ok,
+      conn: put_req_header(conn, "accept", "application/json"),
+      current_user: current_user
+    }
+  end
+
+  defp setup_current_user(conn) do
+    current_user = fixture(:current_user)
+    {
+      :ok,
+      conn: Test.init_test_session(conn, current_user_id: current_user.id),
+      current_user: current_user
+    }
   end
 
   describe "index" do
-    test "lists all users", %{conn: conn} do
+    test "lists all users", %{conn: conn, current_user: current_user} do
       conn = get(conn, Routes.user_path(conn, :index))
-      assert json_response(conn, 200) == []
+      assert json_response(conn, 200) ==
+        [%{
+            "id" => current_user.id,
+            "email" => current_user.email,
+            "is_active" => current_user.is_active
+         }]
     end
   end
 
