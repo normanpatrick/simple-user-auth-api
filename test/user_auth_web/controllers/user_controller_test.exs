@@ -155,6 +155,17 @@ defmodule UserAuthWeb.UserControllerTest do
     end
   end
 
+  describe "CORS tests" do
+    test "preflight request for :create", %{conn: conn} do
+      conn =
+        conn
+        |> put_req_header("origin", "http://foo.com")
+        |> put_req_header("access-control-request-method", "POST")
+        |> options(Routes.user_path(conn, :create), user: @create_attrs)
+      assert "" = response(conn, 200)
+    end
+  end
+
   defp create_user(_) do
     user = fixture(:user)
     {:ok, user: user}
