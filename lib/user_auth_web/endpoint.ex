@@ -40,5 +40,11 @@ defmodule UserAuthWeb.Endpoint do
     key: "_user_auth_key",
     signing_salt: "hN5cjE5k"
 
+  plug Corsica,
+    origins: "*",
+    allow_credentials: true,
+    allow_headers: ["Content-Type"],
+    log: [rejected: :error, invalid: :warn, accepted: :debug]
+
   plug UserAuthWeb.Router
 end

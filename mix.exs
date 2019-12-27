@@ -33,6 +33,7 @@ defmodule UserAuth.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:corsica, "~> 1.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:phoenix, "~> 1.4.10"},
       {:phoenix_pubsub, "~> 1.1"},

@@ -13,11 +13,13 @@ defmodule UserAuthWeb.Router do
   scope "/api", UserAuthWeb do
     pipe_through :api
     post "/users/sign_in", UserController, :sign_in
+    options "/users/sign_in", UserController, :nothing
   end
 
   scope "/api", UserAuthWeb do
     pipe_through [:api, :authenticate_api]
     resources "/users", UserController
+    options "/users", UserController, :nothing
   end
 
   defp ensure_authenticated(conn, _opts) do
